@@ -12,7 +12,7 @@ import MessageRoutes from './routes/Messages.js';
 dotenv.config();
 
 const PORT = process.env.PORT ;
-const NODE_ENV = process.env.NODE_ENV || 'development'; // Default to 'development'
+const NODE_ENV = process.env.NODE_ENV || 'development'; 
 const app = express();
 
 // db connection 
@@ -37,17 +37,15 @@ if (NODE_ENV === 'production') {
   });
 }
 
-// Create HTTP Server
 const server = createServer(app);
 
-// Socket.IO setup
+// Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: '*', // Update with your frontend domain for production
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
-
 
 
 let users=[]
@@ -68,9 +66,10 @@ io.on('connection',(socket)=>{
     console.log('userid',userId)
     Addusers(userId, socket.id)
     io.emit('getUsers', users)
-    console.log('usersfromscoket',users)
+    console.log('usersfromsocket',users)
 
   })
+
 // message
 socket.on('sendMessage', (data) => {
   const { senderId, receiverId, message } = data.messagedata;
@@ -88,15 +87,15 @@ socket.on('sendMessage', (data) => {
   console.log('messagedata', data);
 });
 
-  // when desction
-  socket.on('disconnect',()=>{
+
+socket.on('disconnect',()=>{
     console.log('a user disconnected')
     ReomveUser(socket.id)
     io.emit('getUsers', users)
     console.log(users)
   })
 })
-// Start the server
+
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT} in ${NODE_ENV} mode`);
 });
