@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 const DbCon = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true, // Optional but recommended
-      serverSelectionTimeoutMS: 30000, // Optional, good for production
-    });
+  serverSelectionTimeoutMS: 30000,
+});
+
     console.log('MongoDB is connected');
   } catch (error) {
     console.error('MongoDB connection error:', error);
