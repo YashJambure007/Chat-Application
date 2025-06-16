@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import  { useEffect, useState } from "react";
-import { FaBars } from "react-icons/fa6";
+import { FaBars } from "react-icons/fa";
 import { CiLogout, CiHome } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
