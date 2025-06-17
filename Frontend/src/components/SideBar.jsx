@@ -14,7 +14,6 @@ import {
 
 export const SideBar = ({ socket }) => {
   const { user } = useSelector((state) => state.auth);
-
   const dispatch = useDispatch();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -22,9 +21,8 @@ export const SideBar = ({ socket }) => {
 
   const [userdata, setUserdata] = useState([]);
   const [search, setSearch] = useState("");
-  const [onlineUsers, setOnlineUsers] = useState([]); // State for online users
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
-  // Fetch all users from the API
   const fetchUsers = async () => {
     try {
       const resp = await axios.get(`${Baseurl}/api/Auth/get_user`);
@@ -34,22 +32,22 @@ export const SideBar = ({ socket }) => {
     }
   };
 
-  // Handle searching/filtering users
   const handleSearch = (value) => {
     setSearch(value);
   };
 
-  // Filter users to exclude the current user and apply the search filter
-  const filteredUsers = userdata
-    .filter((curUser) => curUser._id !== user._id)
-    .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredUsers = user
+    ? userdata
+        .filter((curUser) => curUser._id !== user._id)
+        .filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase())
+        )
+    : [];
 
-  // Fetch users when the component mounts
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  // Handle user logout
   const handleLogout = () => {
     dispatch(logout());
     if (socket) {
@@ -59,13 +57,11 @@ export const SideBar = ({ socket }) => {
     navigate("/login");
   };
 
-  // Handle user selection
   const handleUserSelect = (selectedUser) => {
     dispatch(setSelectedUser(selectedUser));
     setSidebarOpen(false);
   };
 
-  // Listen for online users from the socket
   useEffect(() => {
     if (socket) {
       socket.on("getUsers", (users) => {
@@ -80,7 +76,6 @@ export const SideBar = ({ socket }) => {
     };
   }, [socket]);
 
-  // Check if a user is online
   const isUserOnline = (userId) => {
     return onlineUsers.some((onlineUser) => onlineUser.userId === userId);
   };
@@ -119,7 +114,7 @@ export const SideBar = ({ socket }) => {
               onClick={() => setDropdownOpen(!isDropdownOpen)}
             >
               <img
-                src={user?.profile}
+                src={user?.profile || "/default-profile.jpg"}
                 className="w-12 h-12 rounded-full"
                 alt="Profile"
               />
@@ -161,7 +156,6 @@ export const SideBar = ({ socket }) => {
                     className="ml-[13px] rounded-full w-[50px] h-[50px] object-cover"
                     alt="Profile"
                   />
-                  {/* Show online status */}
                   {isUserOnline(curUser._id) && (
                     <span className="h-2.5 w-2.5 rounded-full bg-green-600 block absolute bottom-1 right-0"></span>
                   )}

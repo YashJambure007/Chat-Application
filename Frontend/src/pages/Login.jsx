@@ -16,13 +16,13 @@ export default function Login() {
     password: "",
   });
 
-  // handle userlogin data
+  // userlogin data
   const hadleuserlogin = (e) => {
     const { name, value } = e.target;
     setuserlogin({ ...userlogin, [name]: value });
   };
 
-  // handle useloginSubmit
+  // useloginSubmit
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userData = {
@@ -32,6 +32,7 @@ export default function Login() {
 
     try {
       const resp = await axios.post(`${Baseurl}/api/Auth/login`, userData, {});
+      console.log("Baseurl at runtime:", Baseurl);
       const data = resp.data;
       console.log(data.user);
       console.log(data.token);
@@ -54,15 +55,10 @@ export default function Login() {
     }
   };
 
-  // register btn click in register
 
   const handlReister = () => {
     usegatReg("/register");
   };
-
-  //  const loginHome = ()=>{
-  //   Homepage('/Home')
-  //  }
 
   return (
     <div>
