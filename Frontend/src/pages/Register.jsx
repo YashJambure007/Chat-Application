@@ -67,7 +67,7 @@ export default function Register() {
 
   return (
     <>
-      <section className="bg-gray-100 dark:bg-gray-900">
+      <section className="bg-gray-100 dark:bg-blue-400">
         <div className="flex flex-col items-center justify-center  px-6 py-7 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div className="p-6 space-y-2 md:space-y-0 sm:p-8">
@@ -95,14 +95,14 @@ export default function Register() {
                       id="profile"
                       name="profile"
                       onChange={handlinput}
-                      className="hidden"
+                      className="hidden mb-2"
                     />
                   </label>
                 </div>
                 <div>
                   <label
                     htmlFor="text"
-                    className="block mb-3 text-lg font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
                   >
                     Name
                   </label>
@@ -112,7 +112,7 @@ export default function Register() {
                     value={user.name}
                     onChange={handlinput}
                     id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
                     placeholder="Enter your name"
                     required=""
                   />
@@ -120,7 +120,7 @@ export default function Register() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block mb-3 text-lg font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
                   >
                     Email
                   </label>
@@ -131,7 +131,7 @@ export default function Register() {
                     onChange={handlinput}
                     id="password"
                     placeholder="Enter your email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
                     required=""
                   />
                 </div>
@@ -140,7 +140,7 @@ export default function Register() {
                     htmlFor="password"
                     className="block mb-3 text-lg font-medium text-gray-900 dark:text-white"
                   >
-                    password
+                    Password
                   </label>
                   <input
                     type="password"
@@ -162,11 +162,11 @@ export default function Register() {
                   </button>
                 </div>
 
-                <p className="text-gray-800 text-sm !mt-8 text-center ">
+                <p className="text-white text-sm !mt-8 text-center ">
                   Don't have an account?{" "}
                   <button
                     type="button"
-                    className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold"
+                    className="text-blue-400 hover:underline ml-1 whitespace-nowrap font-semibold"
                     onClick={hanldloign}
                   >
                     Login

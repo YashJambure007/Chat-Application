@@ -114,7 +114,7 @@ export const Chat = ({ socket }) => {
       ) : (
         <>
           {/* Chat Header */}
-          <div className="w-full max-w-[940px] fixed top-0 z-10 flex justify-between items-center py-2 px-4 bg-[#F0F2F5] shadow-md">
+          <div className="w-full max-w-[1010px] fixed top-0 z-10 flex justify-between items-center py-2 px-4 bg-[#F0F2F5] shadow-md">
             <div className="flex gap-[10px] items-center">
               <img
                 src={slectedUser.profile}
@@ -126,7 +126,7 @@ export const Chat = ({ socket }) => {
                 {/* <span className="flex">online</span> */}
               </div>
             </div>
-            <div className="flex gap-[15px] flex-shrink-0">
+            <div className="flex gap-[35px] flex-shrink-0">
               <button className="text-[20px]">
                 <IoIosVideocam />
               </button>
@@ -140,7 +140,7 @@ export const Chat = ({ socket }) => {
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 relative mt-[65px]">
+          <div className="flex-1 relative mt-[75px] me-2">
             {messages &&
               Array.isArray(messages) &&
               messages.map((message, index) => (
@@ -172,7 +172,7 @@ export const Chat = ({ socket }) => {
               <input
                 type="text"
                 placeholder="Type your message..."
-                className="w-full px-3 py-2 bg-[#EEEEF8] text-gray-800 rounded-md pr-[120px]"
+                className="w-full px-3 py-2 bg-gray-300 text-gray-800 rounded-md pr-[120px]"
                 ref={inputvalue}
               />
               <button

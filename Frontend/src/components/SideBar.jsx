@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { CiLogout, CiHome } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,10 @@ import axios from "axios";
 import { Baseurl } from "../../services api/baseurl";
 import { logout } from "../redux/fetaures/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { reomveSelectedUser, setSelectedUser } from "../redux/fetaures/userSlice";
+import {
+  reomveSelectedUser,
+  setSelectedUser,
+} from "../redux/fetaures/userSlice";
 
 export const SideBar = ({ socket }) => {
   const { user } = useSelector((state) => state.auth);
@@ -94,54 +97,53 @@ export const SideBar = ({ socket }) => {
 
       {/* Sidebar */}
       <div
-        className={`sidebar fixed top-0 left-0 max-h-screen bg-[#FFFFFF] z-10 shadow-lg transition-transform duration-300 ${
+        className={`sidebar fixed top-0 left-0 max-h-screen bg-green-100 z-10 shadow-lg transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:static md:translate-x-0 md:block w-70 overflow-y-scroll h-screen py-6 px-4`}
       >
-       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between md:mt-0 mt-11">
-  {/* Search Bar */}
-  <input
-    value={search}
-    onChange={(event) => handleSearch(event.target.value)}
-    type="text"
-    placeholder="Search users..."
-    className="w-full md:w-2/3 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
+        <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between md:mt-0 mt-11">
+          {/* Search Bar */}
+          <input
+            value={search}
+            onChange={(event) => handleSearch(event.target.value)}
+            type="text"
+            placeholder="Search users..."
+            className="bg-white w-full md:w-2/3 px-4 py-2 rounded-lg border border-gray-500 focus:outline-none focus:ring-2 focus:ring-white"
+          />
 
-  {/* Dropdown for Logout */}
-  <div className="relative font-[sans-serif] mt-4 md:mt-0 md:ml-4">
-    <button
-      type="button"
-      className="flex items-center rounded-full text-[#333] text-sm outline-none"
-      onClick={() => setDropdownOpen(!isDropdownOpen)}
-    >
-      <img
-        src={user?.profile}
-        className="w-9 h-9 rounded-full"
-        alt="Profile"
-      />
-    </button>
+          {/* Dropdown for Logout */}
+          <div className="relative font-[sans-serif] mt-4 md:mt-0 md:ml-4 ">
+            <button
+              type="button"
+              className="flex border-[1px] hover:transition-all hover:shadow-slate-400 hover:border-green-800 items-center rounded-full text-[#333] text-sm"
+              onClick={() => setDropdownOpen(!isDropdownOpen)}
+            >
+              <img
+                src={user?.profile}
+                className="w-12 h-12 rounded-full"
+                alt="Profile"
+              />
+            </button>
 
-    <ul
-      className={`absolute right-0 mt-2 shadow-lg bg-white py-2 z-[1000] min-w-24 w-15 rounded-lg max-h-60 overflow-x-hidden ${
-        isDropdownOpen ? "block" : "hidden"
-      }`}
-    >
-      <li className="py-2.5 px-5 gap-[8px] flex items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer">
-        <CiHome />
-        Home
-      </li>
-      <li
-        onClick={handleLogout}
-        className="py-2.5 px-5 flex gap-[8px] items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer"
-      >
-        <CiLogout />
-        Logout
-      </li>
-    </ul>
-  </div>
-</div>
-
+            <ul
+              className={`absolute right-0 mt-2 shadow-lg bg-white py-2 z-[1000] min-w-24 w-15 rounded-lg max-h-60 overflow-x-hidden ${
+                isDropdownOpen ? "block" : "hidden"
+              }`}
+            >
+              <li className="py-2.5 px-5 gap-[8px] flex items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer">
+                <CiHome />
+                Home
+              </li>
+              <li
+                onClick={handleLogout}
+                className="py-2.5 px-5 flex gap-[8px] items-center hover:bg-gray-100 text-[#333] text-sm cursor-pointer"
+              >
+                <CiLogout />
+                Logout
+              </li>
+            </ul>
+          </div>
+        </div>
 
         {/* User List */}
         <div className="my-8 flex-1">

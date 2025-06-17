@@ -66,17 +66,17 @@ export default function Login() {
 
   return (
     <div>
-      <div className="bg-gray-100 font-[sans-serif]">
+      <div className="bg-blue-400 font-[sans-serif]">
         <div className="min-h-screen flex flex-col items-center justify-center py-6 px-4">
           <div className="max-w-md w-full">
-            <div className="p-8 rounded-2xl bg-white shadow">
-              <h2 className="text-gray-800 text-center text-2xl font-bold">
+            <div className="p-8 rounded-2xl bg-gray-800 shadow">
+              <h2 className="text-white text-center text-2xl font-bold">
                 Login
               </h2>
               <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
                 <div>
-                  <label className="text-gray-800 text-lg mb-2 block">
-                    email
+                  <label className="text-white text-lg mb-2 block">
+                    Email
                   </label>
                   <div className="relative flex items-center">
                     <input
@@ -85,14 +85,14 @@ export default function Login() {
                       onChange={hadleuserlogin}
                       type="text"
                       required
-                      className="w-full text-gray-800 text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Enter user name"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-gray-800 text-lg mb-2 block">
+                  <label className="text-white text-lg mb-2 block">
                     Password
                   </label>
                   <div className="relative flex items-center">
@@ -102,7 +102,7 @@ export default function Login() {
                       onChange={hadleuserlogin}
                       type="password"
                       required
-                      className="w-full text-gray-800 text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Enter password"
                     />
                   </div>
@@ -113,12 +113,12 @@ export default function Login() {
                     type="submit"
                     className="w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
                   >
-                    login
+                    Login
                   </button>
                 </div>
-                <p className="text-gray-800 text-sm !mt-8 text-center">
-                  Dont have an account?{" "}
-                  <button onClick={handlReister}>Click me</button>
+                <p className="text-white text-sm !mt-8 text-center">
+                  Don&#39;t have an account?{" "}
+                  <button className="text-blue-400" onClick={handlReister}>Click me</button>
                 </p>
               </form>
             </div>
