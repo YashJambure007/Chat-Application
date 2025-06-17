@@ -147,7 +147,7 @@ export const SideBar = ({ socket }) => {
 
         {/* User List */}
         <div className="my-8 flex-1">
-          <h6 className="text-sm text-gray-700 font-semibold mb-6">Teams</h6>
+          <h6 className="text-[1.5rem] text-gray-700 font-semibold mb-6">Users</h6>
           <ul className="space-y-6">
             {filteredUsers.map((curUser) => (
               <li
