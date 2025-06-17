@@ -106,7 +106,7 @@ export const SideBar = ({ socket }) => {
             className="bg-white w-full md:w-2/3 px-4 py-2 rounded-lg border border-gray-500 focus:outline-none focus:ring-2 focus:ring-white"
           />
 
-          {/* Dropdown for Logout */}
+          {/*Dropdown for Logout*/}
           <div className="relative font-[sans-serif] mt-4 md:mt-0 md:ml-4 ">
             <button
               type="button"
