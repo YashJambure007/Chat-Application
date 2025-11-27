@@ -13,27 +13,34 @@ dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";
+
 const app = express();
 
-DbCon();
 
 app.use(
   cors({
     origin: [
-      "https://chat-application-4sjsk1625-yash-jambures-projects.vercel.app",
-      "http://localhost:5173",
+      "https://chat-application-4sjsk1625-yash-jambures-projects.vercel.app", 
+      "http://localhost:5173", 
     ],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
+
 app.use(express.json());
 app.use(express.static("public"));
+
+
+DbCon();
+
 
 app.use("/api/Auth", AuthRoutes);
 app.use("/api/message", MessageRoutes);
 app.use("/api/ai", aiRoutes);
+
 
 if (NODE_ENV === "production") {
   const __dirname = path.resolve();
@@ -48,7 +55,9 @@ if (NODE_ENV === "production") {
   });
 }
 
+
 const server = createServer(app);
+
 
 const io = new Server(server, {
   cors: {
@@ -63,15 +72,16 @@ const io = new Server(server, {
   allowEIO3: true, 
 });
 
+
 let users = [];
 
-const Addusers = (userId, socketId) => {
+const AddUser = (userId, socketId) => {
   if (!users.some((u) => u.userId === userId)) {
     users.push({ userId, socketId });
   }
 };
 
-const ReomveUser = (socketId) => {
+const RemoveUser = (socketId) => {
   users = users.filter((u) => u.socketId !== socketId);
 };
 
@@ -80,12 +90,12 @@ const GetUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
+  console.log("User connected:", socket.id);
 
   socket.on("AddUserSocket", (userId) => {
-    Addusers(userId, socket.id);
+    AddUser(userId, socket.id);
     io.emit("getUsers", users);
-    console.log("Connected users:", users);
+    console.log("Current users:", users);
   });
 
   socket.on("sendMessage", (data) => {
@@ -97,18 +107,16 @@ io.on("connection", (socket) => {
         senderId,
         message,
       });
-    } else {
-      console.log("Receiver not connected");
     }
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
-    ReomveUser(socket.id);
+    RemoveUser(socket.id);
     io.emit("getUsers", users);
-    console.log("Remaining users:", users);
+    console.log("User disconnected:", socket.id);
   });
 });
+
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT} in ${NODE_ENV} mode`);
