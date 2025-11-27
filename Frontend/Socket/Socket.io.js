@@ -6,14 +6,15 @@ let socket = null;
 // Initialize the socket connection
 export const initSocket = (userId) => {
   if (!socket) {
-    socket = io(Baseurl);
+    socket = io(Baseurl, {
+      transports: ["websocket", "polling"],
+      withCredentials: true,
+    });
 
-    // Emit userId to the server
     if (userId) {
       socket.emit("AddUserSocket", userId);
     }
 
-    // Handle socket events
     socket.on("disconnect", () => {
       console.log("Socket disconnected");
       socket = null;
@@ -22,7 +23,6 @@ export const initSocket = (userId) => {
   return socket;
 };
 
-// Get the existing socket instance
 export const getSocket = () => {
   if (!socket) {
     console.error("Socket not initialized. Call initSocket() first.");
@@ -30,7 +30,6 @@ export const getSocket = () => {
   return socket;
 };
 
-// Disconnect the socket
 export const disconnectSocket = () => {
   if (socket) {
     socket.disconnect();
