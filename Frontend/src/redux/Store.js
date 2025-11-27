@@ -1,4 +1,6 @@
+
 import { configureStore } from "@reduxjs/toolkit";
+import chatReducer from "./fetaures/chatSlice";
 import authReducer from "./fetaures/authSlice";
 import userReducer from "./fetaures/userSlice";
 import {
@@ -14,19 +16,19 @@ import {
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 
-// Persist config
 const persistConfig = {
   key: "root",
   storage,
 };
 
-// Combine reducers
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
+  chat: chatReducer, 
 });
 
-// Persisted reducer
+
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({

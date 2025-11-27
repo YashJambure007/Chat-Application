@@ -1,8 +1,12 @@
 import express from 'express'
 import { getMessages, SendMessage } from '../controllers/Message.js'
 
-const MessageRoutes=express.Router()
+const MessageRoutes = express.Router();
 
-MessageRoutes.post('/send_message',SendMessage)
-MessageRoutes.post('/get_messages', getMessages)
-export default MessageRoutes
+// GET messages between two users
+MessageRoutes.get('/:senderId/:receiverId', getMessages);
+
+// SEND message
+MessageRoutes.post('/send', SendMessage);
+
+export default MessageRoutes;

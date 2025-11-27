@@ -14,47 +14,33 @@ export const SendMessage = async (req, res) => {
   }
 
   try {
-    // Create a new message
     const newMessage = new MessageModel({
       userId: senderId,
       message,
     });
 
-    // Save the message first
     const savedMessage = await newMessage.save();
 
-    // First try to find an existing conversation
     let conversation = await ConversationModel.findOne({
-      members: {
-        $all: [senderId, receiverId],
-        $size: 2,
-      },
+      members: { $all: [senderId, receiverId], $size: 2 },
     });
 
     if (conversation) {
-      // If conversation exists, update it
       conversation = await ConversationModel.findByIdAndUpdate(
         conversation._id,
-        {
-          $push: { messages: savedMessage._id },
-        },
+        { $push: { messages: savedMessage._id } },
         { new: true }
       );
     } else {
-      // If no conversation exists, create a new one
       conversation = await ConversationModel.create({
         members: [senderId, receiverId],
         messages: [savedMessage._id],
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Message sent successfully",
-      data: {
-        newMessage: savedMessage,
-        conversation: conversation,
-      },
+      message: savedMessage, 
     });
   } catch (error) {
     console.error("Message error:", error);
@@ -66,8 +52,8 @@ export const SendMessage = async (req, res) => {
 };
 
 export const getMessages = async (req, res) => {
-  const { senderId, receiverId } = req.body;
-  // console.log('sendia',senderId,'reciverid')
+  const { senderId, receiverId } = req.params;
+
   if (!senderId || !receiverId) {
     return res.status(400).json({
       success: false,
@@ -76,29 +62,25 @@ export const getMessages = async (req, res) => {
   }
 
   try {
-    // Find the conversation
-    const conversation = await ConversationModel.findOne({
-      members: {
-        $all: [senderId, receiverId],
-        $size: 2,
-      },
+    let conversation = await ConversationModel.findOne({
+      members: { $all: [senderId, receiverId], $size: 2 },
     }).populate("messages");
 
     if (!conversation) {
-      const newConversation = await ConversationModel.create({
+      conversation = await ConversationModel.create({
         members: [senderId, receiverId],
+        messages: [],
       });
+
       return res.status(200).json({
         success: true,
-        message: "Conversation created successfully",
-        data: newConversation,
+        messages: [],
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Messages retrieved successfully",
-      data: conversation.messages,
+      messages: conversation.messages,
     });
   } catch (error) {
     console.error("Get messages error:", error);

@@ -6,16 +6,15 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import AuthRoutes from './routes/Auth.js';
 import DbCon from './db/db.js';
+import aiRoutes from './routes/aiRoutes.js';
 import MessageRoutes from './routes/Messages.js';
 
-// Load environment variables
 dotenv.config();
 
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT || 4000 ;
 const NODE_ENV = process.env.NODE_ENV || 'development'; 
 const app = express();
 
-// db connection 
 DbCon();
 
 app.use(express.json());
@@ -23,7 +22,9 @@ app.use(express.static('public'));
 app.use(cors());
 
 app.use('/api/Auth', AuthRoutes);
-app.use('/api/messages', MessageRoutes);
+app.use('/api/message', MessageRoutes);
+app.use('/api/ai', aiRoutes);
+
 
 if (NODE_ENV === 'production') {
   const __dirname = path.resolve();

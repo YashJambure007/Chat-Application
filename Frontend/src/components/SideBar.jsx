@@ -8,7 +8,7 @@ import { Baseurl } from "../../services api/baseurl";
 import { logout } from "../redux/fetaures/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  reomveSelectedUser,
+  removeSelectedUser,
   setSelectedUser,
 } from "../redux/fetaures/userSlice";
 
@@ -22,6 +22,14 @@ export const SideBar = ({ socket }) => {
   const [userdata, setUserdata] = useState([]);
   const [search, setSearch] = useState("");
   const [onlineUsers, setOnlineUsers] = useState([]);
+
+  const aiUser = {
+    _id: "ai-bot",
+    name: "AI Assistant",
+    email: "ai@assistant.com",
+    profile: "https://cdn-icons-png.flaticon.com/512/4712/4712027.png",
+    isBot: true,
+  };
 
   const fetchUsers = async () => {
     try {
@@ -53,14 +61,15 @@ export const SideBar = ({ socket }) => {
     if (socket) {
       socket.disconnect();
     }
-    dispatch(reomveSelectedUser());
+    dispatch(removeSelectedUser());
     navigate("/login");
   };
 
   const handleUserSelect = (selectedUser) => {
-    dispatch(setSelectedUser(selectedUser));
-    setSidebarOpen(false);
-  };
+  dispatch(setSelectedUser(selectedUser));
+  setSidebarOpen(false);
+};
+
 
   useEffect(() => {
     if (socket) {
@@ -68,7 +77,6 @@ export const SideBar = ({ socket }) => {
         setOnlineUsers(users);
       });
     }
-
     return () => {
       if (socket) {
         socket.off("getUsers");
@@ -106,8 +114,8 @@ export const SideBar = ({ socket }) => {
             className="bg-white w-full md:w-2/3 px-4 py-2 rounded-lg border border-gray-500 focus:outline-none focus:ring-2 focus:ring-white"
           />
 
-          {/*Dropdown for Logout*/}
-          <div className="relative font-[sans-serif] mt-4 md:mt-0 md:ml-4 ">
+          {/* Dropdown for Logout */}
+          <div className="relative font-[sans-serif] mt-4 md:mt-0 md:ml-4">
             <button
               type="button"
               className="flex border-[1px] hover:transition-all hover:shadow-slate-400 hover:border-green-800 items-center rounded-full text-[#333] text-sm"
@@ -142,8 +150,27 @@ export const SideBar = ({ socket }) => {
 
         {/* User List */}
         <div className="my-8 flex-1">
-          <h6 className="text-[1.5rem] text-gray-700 font-semibold mb-6">Users</h6>
+          <h6 className="text-[1.5rem] text-gray-700 font-semibold mb-6">
+            Users
+          </h6>
           <ul className="space-y-6">
+            {/* AI Assistant */}
+            <li
+              onClick={() => handleUserSelect(aiUser)}
+              className="flex items-center text-sm text-black hover:text-blue-500 cursor-pointer"
+            >
+              <span className="relative inline-block mr-4">
+                <img
+                  src={aiUser.profile}
+                  className="ml-[13px] rounded-full w-[50px] h-[50px] object-cover"
+                  alt="AI"
+                />
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-500 block absolute bottom-1 right-0"></span>
+              </span>
+              <span className="font-medium">{aiUser.name}</span>
+            </li>
+
+            {/* All real users */}
             {filteredUsers.map((curUser) => (
               <li
                 key={curUser._id}

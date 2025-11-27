@@ -1,21 +1,23 @@
+// src/redux/fetaures/userSlice.js
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  slectedUser: null,
+  selectedUser: null, 
 };
 
 const userSlice = createSlice({
-  name: "auth",
+  name: "user", 
   initialState,
   reducers: {
     setSelectedUser: (state, action) => {
-      state.slectedUser = action.payload;
+      state.selectedUser = action.payload;
     },
-    reomveSelectedUser: (state) => {
-      state.slectedUser = null;
+    removeSelectedUser: (state) => {
+      state.selectedUser = null;
     },
   },
 });
 
-export const { setSelectedUser, reomveSelectedUser } = userSlice.actions;
+export const { setSelectedUser, removeSelectedUser } = userSlice.actions;
 export default userSlice.reducer;

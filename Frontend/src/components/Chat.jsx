@@ -1,197 +1,148 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { Baseurl } from "../../services api/baseurl";
-import { MdKeyboardVoice } from "react-icons/md";
-import { IoIosSend } from "react-icons/io";
-import { CiSearch } from "react-icons/ci";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoIosVideocam } from "react-icons/io";
 
 export const Chat = ({ socket }) => {
-  const { slectedUser } = useSelector((state) => state.user);
   const { user } = useSelector((state) => state.auth);
-
+  const { selectedUser } = useSelector((state) => state.user);
   const [messages, setMessages] = useState([]);
-  const [messagesend, setMessagesend] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+  const scrollRef = useRef();
 
-  const ScrollRef = useRef();
-  const inputvalue = useRef();
+  useEffect(() => {
+    if (selectedUser && selectedUser._id) {
+      fetchMessages();
+    }
+  }, [selectedUser]);
 
-  const getMessages = async () => {
-    if (!user || !slectedUser) return;
-
+  const fetchMessages = async () => {
     try {
-      const senderdata = {
-        senderId: user._id,
-        receiverId: slectedUser._id,
-      };
-      const res = await axios.post(
-        `${Baseurl}/api/messages/get_messages`,
-        senderdata
+      const response = await axios.get(
+        `${Baseurl}/api/message/${user._id}/${selectedUser._id}`
       );
-      const data = res.data;
-      setMessages(data.data);
-      console.log("Getmessage", data);
-    } catch (error) {
-      console.log(error);
+      setMessages(response.data.messages);
+    } catch (err) {
+      console.log("Error fetching messages", err);
     }
   };
 
-  useEffect(() => {
-    if (user && slectedUser) {
-      getMessages();
-    }
-  }, [slectedUser, user, messagesend]);
+  const handleSend = async () => {
+    if (!newMessage.trim() || !selectedUser || !user) return;
 
-  useEffect(() => {
-    if (socket) {
-      socket.off("receiveMessage");
-      socket.on("receiveMessage", (newMessage) => {
-        console.log("message from socket.io", newMessage);
+    const msgData = {
+      senderId: user._id,
+      receiverId: selectedUser._id,
+      message: newMessage,
+      createdAt: new Date(),
+    };
 
-        if (slectedUser && newMessage.userId === slectedUser._id) {
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
-        } else {
-          console.log("Message not for the selected user, ignoring...");
+    setMessages((prev) => [...prev, msgData]);
+    setNewMessage("");
+
+    try {
+      const { data } = await axios.post(`${Baseurl}/api/message/send`, msgData);
+
+      if (!selectedUser.isBot) {
+        socket.emit("sendMessage", data.message);
+      }
+
+      if (selectedUser._id === "ai-bot") {
+        const aiResponse = await axios.post(`${Baseurl}/api/ai/ask`, {
+          message: msgData.message,
+        });
+
+        if (aiResponse.data && aiResponse.data.reply) {
+          const botMessage = {
+            senderId: "ai-bot",
+            message: aiResponse.data.reply, 
+            createdAt: new Date(),
+          };
+          setMessages((prev) => [...prev, botMessage]);
         }
-      });
-    }
-  }, [socket, slectedUser]);
-
-  const handlemessaage = async () => {
-    if (!slectedUser || !slectedUser._id) {
-      console.log("No user selected");
-      return;
-    }
-
-    try {
-      const messagedata = {
-        senderId: user._id,
-        receiverId: slectedUser._id,
-        message: inputvalue.current.value,
-      };
-
-      // Emit message via Socket.IO
-      socket.emit("sendMessage", { messagedata });
-      const UpdateMessage = {
-        userId: user._id,
-        message: inputvalue.current.value,
-        time: Date.now(),
-      };
-      setMessages((prevMessages) =>
-        Array.isArray(prevMessages)
-          ? [...prevMessages, UpdateMessage]
-          : [UpdateMessage]
-      );
-
-      // Save message to the database
-      await axios.post(`${Baseurl}/api/messages/send_message`, messagedata);
-      // setMessagesend((prev) => !prev);
-      inputvalue.current.value = "";
-    } catch (error) {
-      console.log("Error sending message:", error);
+      }
+    } catch (err) {
+      console.error("Message send error", err);
     }
   };
 
   useEffect(() => {
-    if (ScrollRef.current) {
-      ScrollRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    socket?.on("getMessage", (data) => {
+      if (data.senderId === selectedUser?._id) {
+        setMessages((prev) => [...prev, data]);
+      }
+    });
+
+    return () => {
+      socket?.off("getMessage");
+    };
+  }, [socket, selectedUser]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  if (!selectedUser) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-500 text-xl">
+        Select a user to start chat
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {!slectedUser ? (
-        <div className="flex items-center justify-center min-h-screen">
-          <h1 className="text-2xl font-bold text-gray-700 bg-white px-6 py-3 rounded-lg shadow-md">
-            Get Started by Selecting a User
-          </h1>
-        </div>
-      ) : (
-        <>
-          {/* Chat Header */}
-          <div className="w-full max-w-[1010px] fixed top-0 z-10 flex justify-between items-center py-2 px-4 bg-[#F0F2F5] shadow-md">
-            <div className="flex gap-[10px] items-center">
-              <img
-                src={slectedUser.profile}
-                alt="Profile"
-                className="ml-[13px] rounded-[50%] w-[50px] h-[50px] object-cover"
-              />
-              <div>
-                <h3 className="text-[20px]">{slectedUser.name}</h3>
-                {/* <span className="flex">online</span> */}
-              </div>
-            </div>
-            <div className="flex gap-[35px] flex-shrink-0">
-              <button className="text-[20px]">
-                <IoIosVideocam />
-              </button>
-              <button className="text-[20px]">
-                <CiSearch />
-              </button>
-              <button className="text-[20px]">
-                <BsThreeDotsVertical />
-              </button>
-            </div>
-          </div>
+    <div className="flex flex-col h-full p-4 bg-white rounded-md shadow">
+      {/* Chat Header */}
+      <div className="flex items-center mb-0 border-b pb-2">
+        <img
+          src={selectedUser.profile}
+          className="w-10 h-10 rounded-full mr-3"
+          alt={selectedUser.name}
+        />
+        <h2 className="text-lg font-semibold">{selectedUser.name}</h2>
+      </div>
 
-          {/* Chat Messages */}
-          <div className="flex-1 relative mt-[75px] me-2">
-            {messages &&
-              Array.isArray(messages) &&
-              messages.map((message, index) => (
-                <div key={message._id || index} ref={ScrollRef}>
-                  <div
-                    className={`${
-                      message.userId === user._id
-                        ? "chat chat-end ml-3"
-                        : "chat chat-start"
-                    }`}
-                  >
-                    <div
-                      className={`${
-                        message.userId === user._id
-                          ? "chat-bubble bg-green-200 text-black"
-                          : "chat-bubble bg-white text-black"
-                      }`}
-                    >
-                      {message.message}
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-
-          {/* Input Field */}
-          <div className="flex items-center px-4 py-2 sticky bottom-0 bg-gray-100 rounded-[10px]">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                className="w-full px-3 py-2 bg-gray-300 text-gray-800 rounded-md pr-[120px]"
-                ref={inputvalue}
-              />
-              <button
-                className="absolute right-16 top-1/2 transform -translate-y-1/2 text-[20px] px-3 py-1 text-black rounded-md"
-                title="Voice Message"
-              >
-                <MdKeyboardVoice />
-              </button>
-              <button
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[25px] px-4 py-1 text-black rounded-md"
-                title="Send Message"
-                onClick={handlemessaage}
-              >
-                <IoIosSend />
-              </button>
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto mb-4 bg-[url('https://w0.peakpx.com/wallpaper/744/548/HD-wallpaper-whatsapp-ma-doodle-pattern-thumbnail.jpg')]">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            ref={scrollRef}
+            className={`flex mb-2 ${
+              msg.senderId === user._id ? "justify-end" : "justify-start"
+            }`}
+          >
+            <div
+              className={`${
+                msg.senderId === user._id
+                  ? "chat-bubble bg-green-200 text-black"
+                  : "chat-bubble bg-white text-black"
+              }`}
+            >
+              {msg.message}
             </div>
           </div>
-        </>
-      )}
+        ))}
+      </div>
+
+      {/* Input Box */}
+      <div className="flex">
+        <input
+          type="text"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none"
+          placeholder="Type your message..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        />
+        <button
+          onClick={handleSend}
+          className="px-4 py-2 bg-green-600 text-white rounded-r-md"
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 };
